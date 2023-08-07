@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <Authors>Happy Horizon B.V.</Authors>
+        <Description>Rabo Smart Pay plugin for the order process of the GeeksCoreLibrary.</Description>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+        <FileVersion>1.0.0.0</FileVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\GeeksCoreLibrary\GeeksCoreLibrary\GeeksCoreLibrary.csproj" />
+    </ItemGroup>
+
+	<ItemGroup>
+      <PackageReference Include="OmniKassa_Rabobank" Version="1.4.0" />
+	</ItemGroup>
+
+
+</Project>
