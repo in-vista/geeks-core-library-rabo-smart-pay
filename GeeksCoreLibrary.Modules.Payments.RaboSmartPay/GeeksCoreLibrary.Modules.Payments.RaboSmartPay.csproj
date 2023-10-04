@@ -10,11 +10,8 @@
         <FileVersion>1.0.0.0</FileVersion>
     </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\..\GeeksCoreLibrary\GeeksCoreLibrary\GeeksCoreLibrary.csproj" />
-    </ItemGroup>
-
 	<ItemGroup>
+      <PackageReference Include="GeeksCoreLibrary" Version="4.0.1" />
       <PackageReference Include="OmniKassa_Rabobank" Version="1.4.0" />
 	</ItemGroup>
 
