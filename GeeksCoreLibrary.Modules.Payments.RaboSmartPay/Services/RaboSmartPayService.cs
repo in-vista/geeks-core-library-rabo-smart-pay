@@ -78,7 +78,7 @@ public class RaboSmartPayService : PaymentServiceProviderBaseService, IPaymentSe
         }
 
         var orderBuilder = new MerchantOrder.Builder()
-            .WithMerchantOrderId(invoiceNumber)
+            .WithMerchantOrderId(invoiceNumber.Replace("-","")) //There are only alphanumeric characters allowed. At payment-in we put this hyphen back at this position (14 characters from the end) to match the order in the database 
             .WithAmount(Money.FromDecimal(Currency.EUR, totalPrice))
             .WithMerchantReturnURL(paymentMethodSettings.PaymentServiceProvider.SuccessUrl)
             .WithOrderItems(CreateOrderItems(shoppingBaskets));
@@ -233,6 +233,8 @@ public class RaboSmartPayService : PaymentServiceProviderBaseService, IPaymentSe
         {
             case "IDEAL":
                 return PaymentBrand.IDEAL;
+            case "SOFORT":
+                return PaymentBrand.SOFORT;
             case "AFTERPAY":
                 return PaymentBrand.AFTERPAY;
             case "PAYPAL":
@@ -264,7 +266,9 @@ public class RaboSmartPayService : PaymentServiceProviderBaseService, IPaymentSe
                 Successful = false
             };
         }
-
+        
+        //TODO:remove: await LogIncomingPaymentActionAsync(PaymentServiceProviders.RaboSmartPay, "test", 200);
+        
         var raboSmartPaySettings = (RaboSmartPaySettingsModel) paymentMethodSettings.PaymentServiceProvider;
         SetupEnvironment(raboSmartPaySettings);
 
@@ -358,7 +362,15 @@ AND paymentServiceProvider.entity_type = '{Constants.PaymentServiceProviderEntit
     /// <inheritdoc />
     public string GetInvoiceNumberFromRequest()
     {
-        return HttpContextHelpers.GetRequestValue(httpContextAccessor?.HttpContext, RaboSmartPayConstants.WebhookInvoiceNumberProperty);
+        var invoiceNumber = HttpContextHelpers.GetRequestValue(httpContextAccessor?.HttpContext, RaboSmartPayConstants.WebhookInvoiceNumberProperty);
+        //return HttpContextHelpers.GetRequestValue(httpContextAccessor?.HttpContext, RaboSmartPayConstants.WebhookInvoiceNumberProperty);
+        if ( invoiceNumber.Length>14)
+        {
+            //in the orderId for Rabo Smart pay the hyphen (-) was removed. The original order ID is always <ORDERID>-YYYYMMDDhhmmss, so we place this hyphen back
+            invoiceNumber =  invoiceNumber.Insert( invoiceNumber.Length-14, "-");            
+        }
+
+        return invoiceNumber;
     }
 
     /// <summary>
